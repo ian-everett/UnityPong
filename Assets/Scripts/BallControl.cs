@@ -66,7 +66,7 @@ public class BallControl : MonoBehaviour
             /*
              * Speed up gradualy
              */
-            gain_x += (vel.x > 0) ? -2 : 2;
+            gain_x += (vel.x > 0) ? -1.5f : 1.5f;
         }
     }
 }
