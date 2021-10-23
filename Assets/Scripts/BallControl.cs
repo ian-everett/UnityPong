@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class BallControl : MonoBehaviour
 {
-    private Rigidbody2D rb2d;
+    private Rigidbody2D rb;
     private float gain_x;
 
-    void GoBall(){
+    void GoBall()
+    {
         Vector2 vector;
         
         /*
@@ -28,45 +29,45 @@ public class BallControl : MonoBehaviour
          * It takes into account the mass of the object whereas
          * setting the velocity won't
          */
-        rb2d.AddForce(vector);
+        rb.AddForce(vector);
     }
 
-    void Start(){
-        rb2d = GetComponent<Rigidbody2D>();
-
-        /*
-         * Start game by launching ball after 2 seconds
-         */
-        Invoke("GoBall", 2);  
+    void Start()
+    {
+        rb = GetComponent<Rigidbody2D>();
     }
 
-    void ResetBall(){
-        rb2d.velocity = Vector2.zero;
+    public void ResetBall()
+    {
+        rb.velocity = Vector2.zero;
         transform.position = Vector2.zero;
         gain_x = 0;
     }
 
-    void RestartGame(){
+    public void RestartGame()
+    {
         ResetBall();
-        Invoke("GoBall", 1);
+        Invoke("GoBall", 2);
     }
 
     /*
      * In built collision function
      * Something (coll) has just collied with this object 
      */
-    void OnCollisionEnter2D(Collision2D coll){
-        if (coll.collider.CompareTag("Player")){
+    void OnCollisionEnter2D(Collision2D coll)
+    {
+        if (coll.collider.CompareTag("Player"))
+        {
             Vector2 vel;
 
-            vel.x = rb2d.velocity.x + gain_x;
-            vel.y = (rb2d.velocity.y / 2) + (coll.collider.attachedRigidbody.velocity.y / 3);
-            rb2d.velocity = vel;
+            vel.x = rb.velocity.x + gain_x;
+            vel.y = (rb.velocity.y / 2) + (coll.collider.attachedRigidbody.velocity.y / 3);
+            rb.velocity = vel;
 
             /*
              * Speed up gradualy
              */
-            gain_x += (vel.x > 0) ? -1.5f : 1.5f;
+            gain_x += (vel.x > 0) ? -1.2f : 1.2f;
         }
     }
 }

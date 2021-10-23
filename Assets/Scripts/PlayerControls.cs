@@ -4,46 +4,52 @@ using UnityEngine;
 
 public class PlayerControls : MonoBehaviour
 {
-    public KeyCode moveUp = KeyCode.W;
-    public KeyCode moveDown = KeyCode.S;
-    public float speed = 10.0f;
-    public float boundY = 2.25f;
-    private Rigidbody2D rb2d;
+    [SerializeField] KeyCode moveUp = KeyCode.W;
+    [SerializeField] KeyCode moveDown = KeyCode.S;
+
+    private static float speed = 10.0f;
+    private static float boundY = 2.5f;
+    private Rigidbody2D rb;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        rb2d = GetComponent<Rigidbody2D>();
+        rb = GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        var vel = rb2d.velocity;
+        Vector2 vel = rb.velocity;
 
         /*
          * Move paddle
          */
-        if (Input.GetKey(moveUp)) {
+        if (Input.GetKey(moveUp))
+        {
             vel.y = speed;
         }
-        else if (Input.GetKey(moveDown)) {
+        else if (Input.GetKey(moveDown))
+        {
             vel.y = -speed;
         }
-        else {
+        else
+        {
             vel.y = 0;
         }
-        rb2d.velocity = vel;
+        rb.velocity = vel;
 
         /*
          * Keep paddle in bounds
          */
-        var pos = transform.position;
-        if (pos.y > boundY) {
+        Vector2 pos = transform.position;
+        if (pos.y > boundY)
+        {
             pos.y = boundY;
         }
-        else if (pos.y < -boundY) {
+        else if (pos.y < -boundY)
+        {
             pos.y = -boundY;
         }
         transform.position = pos;  

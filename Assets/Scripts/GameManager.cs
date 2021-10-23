@@ -1,48 +1,73 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.UI;
+
 
 public class GameManager : MonoBehaviour
 {
-    public static int PlayerScore1 = 0;
-    public static int PlayerScore2 = 0;
+    [SerializeField] Text score1;
+    [SerializeField] Text score2;
+    [SerializeField] Text playerWins;
+    [SerializeField] UnityEvent gameoverEvent;
+    [SerializeField] UnityEvent restartEvent;
 
-    public GUISkin layout;
+    private int PlayerScore1;
+    private int PlayerScore2;
 
-    GameObject theBall;
 
-
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        theBall = GameObject.FindGameObjectWithTag("Ball"); 
+        Invoke("RestartGame", 3);
     }
 
-    public static void Score(string wallID) {
-        if (wallID == "RightWall"){
+    public void Score(string wall)
+    {
+        if (wall == "RightWall")
+        {
             PlayerScore1++;
-        } else {
+            UpdateScores();
+
+            if (PlayerScore1 >= 10)
+            {
+                playerWins.text = "Player 1 Wins";
+                gameoverEvent.Invoke();
+            }
+            else
+            {
+                UpdateScores();
+                restartEvent.Invoke();
+            }
+        }
+        else
+        {
             PlayerScore2++;
+            UpdateScores();
+
+            if (PlayerScore2 >= 10)
+            {
+                playerWins.text = "Player 2 Wins";
+                gameoverEvent.Invoke();
+            }
+            else
+            { 
+                restartEvent.Invoke();
+            }
         }
     }
 
-    void OnGUI() {
-        GUI.skin = layout;
-        GUI.Label(new Rect((Screen.width / 2) - 150 - 12, 20, 100, 100), "" + PlayerScore1);
-        GUI.Label(new Rect((Screen.width / 2) + 150 + 12, 20, 100, 100), "" + PlayerScore2);
+    public void RestartGame()
+    {
+        PlayerScore1 = 0;
+        PlayerScore2 = 0;
+        playerWins.text = "";
 
-        if (GUI.Button(new Rect(Screen.width / 2 - 60, 35, 120, 53), "RESTART")) {
-            PlayerScore1 = 0;
-            PlayerScore2 = 0;
-            theBall.SendMessage("RestartGame", 0.5f, SendMessageOptions.RequireReceiver);
-        }
+        UpdateScores();
+        restartEvent.Invoke();
+    }
 
-        if (PlayerScore1 == 10){
-            GUI.Label(new Rect(Screen.width / 2 - 150, 200, 2000, 1000), "PLAYER ONE WINS");
-            theBall.SendMessage("ResetBall", null, SendMessageOptions.RequireReceiver);
-        } else if (PlayerScore2 == 10){
-            GUI.Label(new Rect(Screen.width / 2 - 150, 200, 2000, 1000), "PLAYER TWO WINS");
-            theBall.SendMessage("ResetBall", null, SendMessageOptions.RequireReceiver);
-        }
+    private void UpdateScores()
+    {
+        score1.text = PlayerScore1.ToString();
+        score2.text = PlayerScore2.ToString();
     }
 }
